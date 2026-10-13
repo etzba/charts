@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ .Values.name }}
+    release: {{ .Values.version }}
+  name: {{ .Values.name }}
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: {{ .Values.name }}
+      release: {{ .Values.version }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.name }}
+        release: {{ .Values.version }}
+    spec:
+      containers:
+      - image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        name: {{ .Values.name }}
+        resources:
+          limits:
+            cpu: {{ .Values.resources.limits.cpu }}
+            memory: {{ .Values.resources.limits.memory }}
+          requests:
+            cpu: {{ .Values.resources.requests.cpu }}
+            memory: {{ .Values.resources.requests.memory }}
+        env:
+        - name: CHECK_INTERVAL_DURATION
+          value: {{ .Values.checkInterval }}
+        {{- range $_, $d := .Values.secretDistributions }}
+        {{- if eq $d.remoteRegistry "dockerhub" }}
+        - name: DOCKERHUB_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: {{ $d.secretName }}
+              key: {{ $d.usernameKey }}
+        - name: DOCKERHUB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ $d.secretName }}
+              key: {{ $d.passwordKey }}
+        {{- end }}
+        {{- if eq $d.remoteRegistry "ghcr" }}
+        - name: GHCR_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: {{ $d.secretName }}
+              key: {{ $d.usernameKey }}
+        - name: GHCR_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ $d.secretName }}
+              key: {{ $d.passwordKey }}
+        {{- end }}
+        {{- end }}
+      serviceAccountName: {{ include "image-updater.serviceAccountName" . }}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
