@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="etzba.png" alt="Etzba"/>
+  <img src="etzba.png" alt="etzba"/>
 </p>
 
 # charts
