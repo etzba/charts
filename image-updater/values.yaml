@@ -1,0 +1,86 @@
+# Default values for image-updater.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+name: image-updater
+version: v0.1.0
+
+image:
+  repository: etzba/image-updater
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: latest
+
+imagePullSecrets: []
+
+checkInterval: 2m
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: "image-updater"
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+secretDistributions:
+  # Only if using secret-distributor, this section allows a user to install distributions in namespace
+  # in accordance to secret-distributor namespace secrets. Please read more about how secret-distributor
+  # works and use this secret as a map of relevant secrets in your environment.
+  #dockerHub:
+  #  # name is the name of the Distribution
+  #  name: docker-apitoken
+  #  # secretName is the name of the secret installed in secret-distributor namespace and that should be
+  #  # set for image-updater.
+  #  secretName: docker-auth
+  #  remoteRegistry: dockerhub
+  #  usernameKey: username
+  #  passwordKey: password
+  #ghcr:
+  #  name: ghcr-apitoken
+  #  secretName: ghcr-auth
+  #  remoteRegistry: ghcr
+  #ghcrDockerConfig:
+  #  name: ghcr-docker-config
+  #  secretName: ghcr-secret
+    
+secrets:
+  # Set kubernetes secrets
+  dockerHub:
+    name: docker-auth
+    type: Opaque
+    # The data should be in plain text and will be encoded as kubernetes secrets
+    # require base64 string. Create a map of keys and values.
+    data:
+      username: "etzba"
+      password: "default"
+  ghcr:
+    name: ghcr-auth
+    type: Opaque
+    data:
+      username: "etzba"
+      password: "default"
+  ghcrDockerConfig:
+    name: ghcr-secret
+    type: kubernetes.io/dockerconfigjson
+    data:
+      .dockerconfigjson: '{"auths":{"ghcr.io":{"auth":"<token>"}}}'
