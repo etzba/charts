@@ -6,12 +6,12 @@ name: image-updater
 version: v0.1.0
 
 image:
-  repository: ghcr.io/etzba/image-updater
+  repository: etzba/image-updater
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: latest
 
-imagePullSecrets: [ghcr-secret]
+imagePullSecrets: []
 
 checkInterval: 2m
 
@@ -46,22 +46,22 @@ secretDistributions:
   # Only if using secret-distributor, this section allows a user to install distributions in namespace
   # in accordance to secret-distributor namespace secrets. Please read more about how secret-distributor
   # works and use this secret as a map of relevant secrets in your environment.
-  dockerHub:
-    # name is the name of the Distribution
-    name: docker-apitoken
-    # secretName is the name of the secret installed in secret-distributor namespace and that should be
-    # set for image-updater.
-    secretName: docker-auth
-    remoteRegistry: dockerhub
-    usernameKey: username
-    passwordKey: password
-  ghcr:
-    name: ghcr-apitoken
-    secretName: ghcr-auth
-    remoteRegistry: ghcr
-  ghcrDockerConfig:
-    name: ghcr-docker-config
-    secretName: ghcr-secret
+  #dockerHub:
+  #  # name is the name of the Distribution
+  #  name: docker-apitoken
+  #  # secretName is the name of the secret installed in secret-distributor namespace and that should be
+  #  # set for image-updater.
+  #  secretName: docker-auth
+  #  remoteRegistry: dockerhub
+  #  usernameKey: username
+  #  passwordKey: password
+  #ghcr:
+  #  name: ghcr-apitoken
+  #  secretName: ghcr-auth
+  #  remoteRegistry: ghcr
+  #ghcrDockerConfig:
+  #  name: ghcr-docker-config
+  #  secretName: ghcr-secret
     
 secrets:
   # Set kubernetes secrets

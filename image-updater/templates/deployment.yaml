@@ -24,42 +24,11 @@ spec:
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         name: {{ .Values.name }}
         resources:
-          limits:
-            cpu: {{ .Values.resources.limits.cpu }}
-            memory: {{ .Values.resources.limits.memory }}
-          requests:
-            cpu: {{ .Values.resources.requests.cpu }}
-            memory: {{ .Values.resources.requests.memory }}
+          {{- toYaml .Values.resources | nindent 12 }}
         env:
         - name: CHECK_INTERVAL_DURATION
           value: {{ .Values.checkInterval }}
-        {{- range $_, $d := .Values.secretDistributions }}
-        {{- if eq $d.remoteRegistry "dockerhub" }}
-        - name: DOCKERHUB_USERNAME
-          valueFrom:
-            secretKeyRef:
-              name: {{ $d.secretName }}
-              key: {{ $d.usernameKey }}
-        - name: DOCKERHUB_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ $d.secretName }}
-              key: {{ $d.passwordKey }}
-        {{- end }}
-        {{- if eq $d.remoteRegistry "ghcr" }}
-        - name: GHCR_USERNAME
-          valueFrom:
-            secretKeyRef:
-              name: {{ $d.secretName }}
-              key: {{ $d.usernameKey }}
-        - name: GHCR_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ $d.secretName }}
-              key: {{ $d.passwordKey }}
-        {{- end }}
-        {{- end }}
-      serviceAccountName: {{ include "image-updater.serviceAccountName" . }}
+      serviceAccountName: {{ .Values.serviceAccount.name }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
