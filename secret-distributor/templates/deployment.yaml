@@ -6,7 +6,6 @@ metadata:
   labels:
     control-plane: {{ .Values.name }}
     app.kubernetes.io/name: {{ .Values.name }}
-    app.kubernetes.io/managed-by: kustomize
 spec:
   selector:
     matchLabels:
