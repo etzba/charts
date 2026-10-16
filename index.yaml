@@ -1,0 +1,27 @@
+apiVersion: v1
+entries:
+  image-updater:
+  - apiVersion: v2
+    appVersion: 2026.10.15
+    created: "2026-10-16T09:17:20.040207608+02:00"
+    description: A kubernetes controller that update deployment images in cluster.
+      More details at https://etzba.com
+    digest: 14e70e851129e6d71ab3e04317772d3f54ae2c8e9bbf87b0b6f5d19679746c6a
+    name: image-updater
+    type: application
+    urls:
+    - image-updater-0.1.0.tgz
+    version: 0.1.0
+  secret-distributor:
+  - apiVersion: v2
+    appVersion: 2026.10.15
+    created: "2026-10-16T09:17:20.040552365+02:00"
+    description: A kubernetes operator to distribute secrets in clusters. More details
+      at https://etzba.com and https://github.com/etzba/secret-distributor
+    digest: 73cc0e14739b7fb9577e974f3645b9fa7659cce5a387fef2c77e46606a5461d8
+    name: secret-distributor
+    type: application
+    urls:
+    - secret-distributor-0.1.0.tgz
+    version: 0.1.0
+generated: "2026-10-16T09:17:20.039658176+02:00"

@@ -8,34 +8,28 @@ In this repository you'll find etzba helm charts, to deploy in your kubernetes c
 
 For every chart there is a dedicated section with the relevant command to install the chart.
 
-### image-updater
+### Add repositories
 
-Add:
+To add all helm repositories of etzba:
 
 ```sh
-helm repo add image-updater https://raw.githubusercontent.com/etzba/charts/master/image-updater
+helm repo add etzba https://raw.githubusercontent.com/etzba/charts/master/
 helm repo update
 helm repo list
 ```
 
-Install:
+### image-updater
+
+To install image-updater in Kubernetes cluster:
 
 ```sh
-helm install image-updater image-updater/ -n image-updater --create-namespace
+helm install image-updater image-updater/image-updater -n image-updater --create-namespace
 ```
 
 ### secret-distributor
 
-Add:
+To install secret-distributor in Kubernetes cluster:
 
 ```sh
-helm repo add secret-distributor https://raw.githubusercontent.com/etzba/charts/master/secret-distributor
-helm repo update
-helm repo list
-```
-
-Install:
-
-```sh
-helm install secret-distributor secret-distributor/ -n secret-distributor --create-namespace
+helm install secret-distributor etzba/secret-distributor -n secret-distributor --create-namespace
 ```
