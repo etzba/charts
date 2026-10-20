@@ -1,0 +1,82 @@
+# Default values for etz.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+name: etz
+version: v0.0.4
+
+image:
+  repository: etzba/etz
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: v0.0.4
+
+imagePullSecrets: []
+
+checkInterval: 2m
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: "etz"
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+jobSpecs:
+  completions: 1
+  parallelism: 1
+
+# mountDir will mount the config map to the pod and used as a command argument for etz
+mountDir: /data
+
+etz:
+  # executionType is the type of execution of etz cli tool. Read more about execution type in commands and arguments in https://etzba.com
+  # if this value is not provided, etz will use by default general config file.
+  executionType: ""
+  # commandArgs can be added to etz command. To find more about it, go to commands and arguments in https://etzba.com
+  commandArgs: []
+  # fileName is the file name that is used for load test execution (can be general config or execution file)
+  fileName: "config.yaml"
+  # data is the config map data of etz which can be general config file or execution file as explained in https://etzba.com
+  data:
+    # fromFile creates config map data from a file if a file name is provided (absolute path)
+    fromFile: ""
+    # dataString added to the config map as a string
+    dataString: |-
+      # A sample of api execution file data for etz load test cli tool
+      {{ $baseUrl := printf "%s" "http://ns-svc.ns.svc.cluster.local:8080" }}
+      {{ $trees := makeAnySlice "Oren" "Brosh" "Arava" "Eucalyptus" }}
+      {{ $path := printf "%s" "/tmp" }}
+      config:
+        workers: 10
+        rps: 40
+        duration: 5m
+        output: {{ $path }}/easy.json
+      api:      
+      {{ range $trees }}
+      - url: {{ $baseUrl }}/trees
+        method: POST
+        data: 
+          name: "etz"
+          age: 72
+      {{ end }}

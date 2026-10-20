@@ -1,0 +1,15 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.name }}-config
+  labels:
+    name: {{ .Values.name }}
+data:
+  {{ .Values.etz.fileName }}: |-
+{{- if .Values.etz.data.fromFile }}
+{{ .Files.Get .Values.etz.fromFile | indent 4 }}
+{{- end }}
+{{- if .Values.etz.data.dataString }}
+{{ .Values.etz.data.dataString | indent 4 }}
+{{- end }}

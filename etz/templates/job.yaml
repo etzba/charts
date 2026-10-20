@@ -1,0 +1,41 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Values.name }}
+  labels:
+    app: {{ .Values.name }}
+spec:
+  completions: {{ .Values.jobSpecs.completions }}
+  parallelism: {{ .Values.jobSpecs.parallelism }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.name }}
+    spec:
+      containers:
+      - image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        name: {{ .Values.name }}
+        resources:
+          {{- toYaml .Values.resources | nindent 12 }}
+        command: ["etz"]
+        args:
+        {{- if .Values.etz.executionType }}
+        - {{ .Values.etz.executionType }}
+        - "--exec={{ .Values.mountDir }}/{{ .Values.etz.fileName }}"
+        {{- else }}
+        - "--config={{ .Values.mountDir }}/{{ .Values.etz.fileName }}"
+        {{- end }}
+        {{- range .Values.etz.commandArgs }}
+        - "{{ . }}"
+        {{- end }}
+        volumeMounts:
+          - name: "{{ .Values.name }}-config"
+            mountPath: "{{ .Values.mountDir }}/{{ .Values.etz.fileName }}"
+            subPath: "{{ .Values.etz.fileName }}"
+      volumes:
+        - name: "{{ .Values.name }}-config"
+          configMap:
+            name: "{{ .Values.name }}-config"
+      restartPolicy: OnFailure
+  backoffLimit: 5
